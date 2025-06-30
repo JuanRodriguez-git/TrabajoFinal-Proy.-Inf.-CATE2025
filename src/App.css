@@ -91,3 +91,12 @@ body {
 .historial li {
   margin-bottom: 6px;
 }
+
+.mensaje-final {
+  margin-top: 20px;
+  color: #fff;
+  font-weight: bold;
+  background: #222;
+  padding: 10px 20px;
+  border-radius: 10px;
+}

@@ -3,6 +3,22 @@ import { obtenerPalabraDelDia, compararPalabra } from './utils';
 
 const INTENTOS_MAX = 6;
 
+function fechaDeHoy() {
+  return new Date().toISOString().split("T")[0]; // "2025-06-29"
+}
+
+function obtenerResultadoGuardado() {
+  const historial = JSON.parse(localStorage.getItem("historialWordle")) || {};
+  return historial[fechaDeHoy()] || null;
+}
+
+const resultadoPrevio = obtenerResultadoGuardado();
+const [intentos, setIntentos] = useState(resultadoPrevio ? [] : []);
+const [resultados, setResultados] = useState([]);
+const [entrada, setEntrada] = useState('');
+const [victoria, setVictoria] = useState(resultadoPrevio?.gano || false);
+const [juegoFinalizado, setJuegoFinalizado] = useState(!!resultadoPrevio);
+
 function Wordle() {
   const [palabra, setPalabra] = useState('');
   const [entrada, setEntrada] = useState('');
@@ -30,6 +46,7 @@ function Wordle() {
 
     if (nuevoIntento === palabra) {
       setVictoria(true);
+      setJuegoFinalizado(true);
 
       guardarResultado(fechaDeHoy(), {
         palabra,
@@ -69,7 +86,7 @@ function Wordle() {
         </div>
       ))}
 
-      {!victoria && intentos.length < INTENTOS_MAX && (
+      {!juegoFinalizado && intentos.length < INTENTOS_MAX && (
         <input
           type="text"
           value={entrada}
@@ -78,6 +95,12 @@ function Wordle() {
           maxLength={palabra.length}
           placeholder="Escribí una palabra"
         />
+      )}
+
+      {juegoFinalizado && (
+        <div className="mensaje-final">
+          <p>Ya jugaste hoy. Vuelve mañana para una nueva palabra.</p>
+        </div>
       )}
     </div>
   );
